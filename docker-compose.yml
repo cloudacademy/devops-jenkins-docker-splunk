@@ -1,0 +1,40 @@
+version: "2"
+services:
+  jenkins:
+    container_name: jenkins
+    #image: jenkins-ca:latest
+    image: jenkins/jenkins:lts
+    networks:
+      - jenkins
+    ports:
+      - "8080:8080"
+    environment:
+      - DOCKER_HOST=tcp://socat:2375
+    depends_on:
+      - socat
+  socat:
+    container_name: socat
+    #image: socat-ca:latest
+    image: alpine/socat:latest
+    networks:
+      - jenkins
+    command: tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    expose:
+      - "2375"
+  splunk:
+    #image: splunk-ca:latest
+    image: splunk/splunk
+    container_name: splunk
+    networks:
+      - jenkins
+    ports:
+      - 8000:8000
+      - 9997:9997
+    environment:
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_PASSWORD=qwerty123
+
+networks:
+  jenkins:
