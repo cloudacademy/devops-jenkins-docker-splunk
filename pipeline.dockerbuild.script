@@ -7,6 +7,7 @@ node {
     def DOCKER_HOME = tool name: 'docker-latest'
     def GRADLE_HOME = tool name: 'gradle-4.10.2', type: 'hudson.plugins.gradle.GradleInstallation'
     def REPO_URL = 'https://github.com/cloudacademy/devops-webapp.git'
+    def DOCKERHUB_REPO = 'cloudacademydevops/webapp'
 
     stage('Clone') {        
         git url: REPO_URL
@@ -31,7 +32,7 @@ node {
             sh "printenv"
             sh "pwd"
             sh "ls -la"
-            def image = docker.build("jeremycookdev/webapp:${BUILD_NUMBER}", "./docker")
+            def image = docker.build("${DOCKERHUB_REPO}:${BUILD_NUMBER}", "./docker")
         }
     }
 
@@ -41,8 +42,8 @@ node {
             withCredentials([usernamePassword(credentialsId: 'dockerhub',
                              usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                 sh "docker login -u ${USERNAME} -p ${PASSWORD} https://index.docker.io/v1/"
-                sh "docker push cloudacademydevops/webapp:${BUILD_NUMBER}"
-                sh "docker push cloudacademydevops/webapp:latest"
+                sh "docker push ${DOCKERHUB_REPO}:${BUILD_NUMBER}"
+                sh "docker push ${DOCKERHUB_REPO}/webapp:latest"
             }            
         }
     }
