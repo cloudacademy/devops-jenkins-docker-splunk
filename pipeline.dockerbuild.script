@@ -1,25 +1,28 @@
+//START-OF-SCRIPT
 node {
-    def SPLUNK_IP='X.X.X.X'
+    //splunk docker container assigned private IP address
+    //found by running:
+    //docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' splunk
+    def SPLUNK_IP='X.X.X.X' //should be 172.18.0.x
     def DOCKER_HOME = tool name: 'docker-latest'
     def GRADLE_HOME = tool name: 'gradle-4.10.2', type: 'hudson.plugins.gradle.GradleInstallation'
+    def REPO_URL = 'https://github.com/cloudacademy/devops-webapp.git'
 
-    stage('prep') {
-        def REPO_URL = 'https://github.com/jeremycook123/skynet.git'
+    stage('Clone') {        
         git url: REPO_URL
-        //git branch: 'webapp2', url: REPO_URL
     }
 
-    stage('build') {
-        sh "cd webapp && ${GRADLE_HOME}/bin/gradle build"
-        sh "ls -la webapp/build/libs/*.war"
+    stage('Build') {
+        sh "${GRADLE_HOME}/bin/gradle build"
+        sh "ls -la build/libs/*.war"
         sh "echo ====================="
-        sh "cp webapp/build/libs/*.war docker/"
+        sh "cp build/libs/*.war docker/"
         sh "pwd"
         sh "ls -la"
         sh "ls -la ./docker"
     }
 
-    stage('Update Splunk IP') {
+    stage('Splunk IP') {
         sh "cd docker && sed -i 's/TOKEN_SPLUNK_IP/${SPLUNK_IP}/g' outputs.conf && cat outputs.conf"    
     }
 
@@ -38,10 +41,11 @@ node {
             withCredentials([usernamePassword(credentialsId: 'dockerhub',
                              usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                 sh "docker login -u ${USERNAME} -p ${PASSWORD} https://index.docker.io/v1/"
-                sh "docker push jeremycookdev/webapp:${BUILD_NUMBER}"
-                sh "docker push jeremycookdev/webapp:latest"
+                sh "docker push cloudacademydevops/webapp:${BUILD_NUMBER}"
+                sh "docker push cloudacademydevops/webapp:latest"
             }            
         }
     }
     */
 }
+//END-OF-SCRIPT
