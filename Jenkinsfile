@@ -1,9 +1,6 @@
 //START-OF-SCRIPT
 node {
-    //splunk docker container assigned private IP address
-    //found by running:
-    //docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' splunk
-    def SPLUNK_IP='X.X.X.X' //should be 172.18.0.x
+    def SPLUNK_HOSTNAME='splunk'
     def DOCKER_HOME = tool name: 'docker-latest'
     def GRADLE_HOME = tool name: 'gradle-4.10.2', type: 'hudson.plugins.gradle.GradleInstallation'
     def REPO_URL = 'https://github.com/cloudacademy/devops-webapp.git'
@@ -21,10 +18,6 @@ node {
         sh "pwd"
         sh "ls -la"
         sh "ls -la ./docker"
-    }
-
-    stage('Splunk IP') {
-        sh "cd docker && sed -i 's/TOKEN_SPLUNK_IP/${SPLUNK_IP}/g' outputs.conf && cat outputs.conf"    
     }
 
     stage ('Docker Build') {
