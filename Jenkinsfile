@@ -25,7 +25,8 @@ node {
             sh "printenv"
             sh "pwd"
             sh "ls -la"
-            def image = docker.build("${DOCKERHUB_REPO}:${BUILD_NUMBER}", "./docker")
+            def image1 = docker.build("${DOCKERHUB_REPO}:${BUILD_NUMBER}", "./docker")
+            def image2 = docker.build("${DOCKERHUB_REPO}:latest", "./docker")
         }
     }
 
