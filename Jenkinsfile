@@ -14,7 +14,7 @@ node {
         sh "${GRADLE_HOME}/bin/gradle build"
         sh "ls -la build/libs/*.war"
         sh "echo ====================="
-        sh "cp build/libs/*.war docker/"
+        sh "cp build/libs/*.war docker/webapp.war"
         sh "pwd"
         sh "ls -la"
         sh "ls -la ./docker"
