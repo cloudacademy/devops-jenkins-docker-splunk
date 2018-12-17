@@ -2,8 +2,8 @@ version: "3.5"
 services:
   jenkins:
     container_name: jenkins
-    #image: jenkins-ca:latest
-    image: jenkins/jenkins:lts
+    image: jenkins-ca:latest
+    #image: jenkins/jenkins:lts
     networks:
       - cloudacademylabs
     ports:
@@ -14,8 +14,8 @@ services:
       - socat
   socat:
     container_name: socat
-    #image: socat-ca:latest
-    image: alpine/socat:latest
+    image: socat-ca:latest
+    #image: alpine/socat:latest
     networks:
       - cloudacademylabs
     command: tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
@@ -24,9 +24,9 @@ services:
     expose:
       - "2375"
   splunk:
-    #image: splunk-ca:latest
-    image: splunk/splunk
     container_name: splunk
+    image: splunk-ca:latest
+    #image: splunk/splunk:latest
     networks:
       - cloudacademylabs
     ports:
