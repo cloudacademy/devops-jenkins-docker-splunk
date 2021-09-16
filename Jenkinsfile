@@ -16,7 +16,6 @@ node {
         sh "echo ====================="
         sh "cp build/libs/*.war docker/webapp.war"
         sh "pwd"
-        sh "ls -la"
         sh "ls -la ./docker"
     }
 
